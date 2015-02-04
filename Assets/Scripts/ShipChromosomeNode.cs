@@ -27,6 +27,16 @@ public class ShipChromosomeNode
 
 	int depth;
 
+	/*public int limbCount()
+	{
+		int r = 1 + (top == null ? 0 : (parentPos == ChildNode.TOP ? 0 : top.limbCount()))
+			+ (bottom == null ? 0 : (parentPos == ChildNode.BOTTOM ? 0 : bottom.limbCount()))
+				+ (left == null ? 0 : (parentPos == ChildNode.LEFT ? 0 : left.limbCount()))
+				+ (right == null ? 0 : (parentPos == ChildNode.RIGHT ? 0 : right.limbCount()));
+
+		return r;
+	}*/
+
 	public string getString()
 	{
 		string r = "";

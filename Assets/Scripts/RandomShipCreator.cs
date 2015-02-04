@@ -4,12 +4,18 @@ using System.Collections.Generic;
 
 public class RandomShipCreator : MonoBehaviour 
 { 
+	public OrbGeneratorScript orbGenerator;
 	private List<ShipArchive> shipArchives;
 	private ShipController lastShip;
+
+
+	float currentTimer;
+	const float maxTimer = 12;
 
 	void Start()
 	{
 		shipArchives = new List<ShipArchive>();
+		currentTimer = maxTimer;
 	}
 
 	void OnGUI()
@@ -17,8 +23,29 @@ public class RandomShipCreator : MonoBehaviour
 		if (GUI.Button(new Rect(0,0, 200, 50), "GENERATE RANDOM SHIP"))
 		{
 			ShipChromosomeNode n = generateRandomShipChromosome();
-			Debug.Log(n.getString());
+			//Debug.Log(n.getString());
 			generatePhysicalShip(n);
+		}
+		if (GUI.Button(new Rect(200,0, 200, 50), "GENERATE BEST SHIP"))
+		{
+			shipArchives.Sort();
+			for (int i = 0; i < shipArchives.Count; ++i)
+				Debug.Log(shipArchives[i].fitness);
+			//Debug.Log(n.getString());
+			generatePhysicalShip(shipArchives[0].root);
+		}
+	}
+
+	void Update()
+	{
+		currentTimer += Time.deltaTime;
+		if (currentTimer >= maxTimer)
+		{
+			orbGenerator.resetOrbs();
+			ShipChromosomeNode n = generateRandomShipChromosome();
+			//Debug.Log(n.getString());
+			generatePhysicalShip(n);
+			currentTimer = 0;
 		}
 	}
 

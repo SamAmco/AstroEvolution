@@ -13,6 +13,7 @@ public class BlockScript : MonoBehaviour
 	public void initialize(ShipChromosomeNode n, ShipController s)
 	{
 		shipController = s;
+		s.limbCount++;
 
 		if (n.top != null)
 			createChild(n.top, ChildNode.BOTTOM, s);
@@ -22,6 +23,11 @@ public class BlockScript : MonoBehaviour
 			createChild(n.left, ChildNode.RIGHT, s);
 		if (n.right != null)
 			createChild(n.right, ChildNode.LEFT, s);
+	}
+
+	void CollectedOrb()
+	{
+		shipController.collectedOrb();
 	}
 
 	//c indicates where the child's parent is in relation to it
