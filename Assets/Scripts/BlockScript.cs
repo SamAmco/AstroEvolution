@@ -3,8 +3,17 @@ using System.Collections;
 
 public class BlockScript : MonoBehaviour 
 {
+	public ShipController shipController;
+
+	void FixedUpdate()
+	{
+		shipController.addToFitness((shipController.getTarget() - transform.position).sqrMagnitude);
+	}
+
 	public void initialize(ShipChromosomeNode n, ShipController s)
 	{
+		shipController = s;
+
 		if (n.top != null)
 			createChild(n.top, ChildNode.BOTTOM, s);
 		if (n.bottom != null)
