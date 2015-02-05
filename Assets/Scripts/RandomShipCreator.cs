@@ -5,41 +5,41 @@ using System.Collections.Generic;
 public class RandomShipCreator : MonoBehaviour 
 { 
 	public OrbGeneratorScript orbGenerator;
-	private List<ShipArchive> shipArchives;
+	public bool guiEnabled = false;
 	private ShipController lastShip;
-
-
+	
 	float currentTimer;
-	const float maxTimer = 12;
 
 	void Start()
 	{
-		shipArchives = new List<ShipArchive>();
-		currentTimer = maxTimer;
+		currentTimer = Config.STANDARD_GENERATION_TIME_LIMIT;
 	}
 
 	void OnGUI()
 	{
-		if (GUI.Button(new Rect(0,0, 200, 50), "GENERATE RANDOM SHIP"))
+		if (guiEnabled)
 		{
-			ShipChromosomeNode n = generateRandomShipChromosome();
-			//Debug.Log(n.getString());
-			generatePhysicalShip(n);
-		}
-		if (GUI.Button(new Rect(200,0, 200, 50), "GENERATE BEST SHIP"))
-		{
-			shipArchives.Sort();
-			for (int i = 0; i < shipArchives.Count; ++i)
-				Debug.Log(shipArchives[i].fitness);
-			//Debug.Log(n.getString());
-			generatePhysicalShip(shipArchives[0].root);
+			if (GUI.Button(new Rect(0,0, 200, 50), "GENERATE RANDOM SHIP"))
+			{
+				ShipChromosomeNode n = generateRandomShipChromosome();
+				//Debug.Log(n.getString());
+				generatePhysicalShip(n);
+			}
+			if (GUI.Button(new Rect(200,0, 200, 50), "GENERATE BEST SHIP"))
+			{
+				PopulationManager.shipArchives.Sort();
+				for (int i = 0; i < PopulationManager.shipArchives.Count; ++i)
+					Debug.Log(PopulationManager.shipArchives[i].fitness);
+				//Debug.Log(n.getString());
+				generatePhysicalShip(PopulationManager.shipArchives[0].root);
+			}
 		}
 	}
 
 	void Update()
 	{
 		currentTimer += Time.deltaTime;
-		if (currentTimer >= maxTimer)
+		if (currentTimer >= Config.STANDARD_GENERATION_TIME_LIMIT)
 		{
 			orbGenerator.resetOrbs();
 			ShipChromosomeNode n = generateRandomShipChromosome();
@@ -59,13 +59,13 @@ public class RandomShipCreator : MonoBehaviour
 		if (lastShip != null)
 		{
 			ShipArchive shipArchive = new ShipArchive(lastShip.rootNode, lastShip.getFitness());
-			shipArchives.Add(shipArchive);
+			PopulationManager.shipArchives.Add(shipArchive);
 
 			GameObject.Destroy(lastShip.gameObject);
 		}
 
 		GameObject g = (GameObject)GameObject.Instantiate(Resources.Load(Config.HEAVY_BLOCK_PREFAB_LOCATION),
-		                       Vector3.zero,
+		                       transform.position,
 		                       Quaternion.identity);
 
 		BlockScript b = g.GetComponent<BlockScript>();
