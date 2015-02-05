@@ -3,12 +3,13 @@ using System.Collections;
 
 public class OrbGeneratorScript : MonoBehaviour 
 {
-	public OrbScript[] orbs;
+	private OrbScript[] orbs;
 	public Object orbPrefab;
 	private Vector3[] orbPositions;
 
 	void Start()
 	{
+		orbs = GameObject.FindObjectsOfType<OrbScript>();
 		orbPositions = new Vector3[orbs.Length];
 		for (int i =0; i < orbs.Length; i++)
 		{

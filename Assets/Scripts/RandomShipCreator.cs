@@ -5,53 +5,13 @@ using System.Collections.Generic;
 public class RandomShipCreator : MonoBehaviour 
 { 
 	public OrbGeneratorScript orbGenerator;
-	public bool guiEnabled = false;
 	private ShipController lastShip;
 	
-	float currentTimer;
 
-	void Start()
+	public void generateRandomShip()
 	{
-		currentTimer = Config.STANDARD_GENERATION_TIME_LIMIT;
-	}
-
-	void OnGUI()
-	{
-		if (guiEnabled)
-		{
-			if (GUI.Button(new Rect(0,0, 200, 50), "GENERATE RANDOM SHIP"))
-			{
-				ShipChromosomeNode n = generateRandomShipChromosome();
-				//Debug.Log(n.getString());
-				generatePhysicalShip(n);
-			}
-			if (GUI.Button(new Rect(200,0, 200, 50), "GENERATE BEST SHIP"))
-			{
-				PopulationManager.shipArchives.Sort();
-				for (int i = 0; i < PopulationManager.shipArchives.Count; ++i)
-					Debug.Log(PopulationManager.shipArchives[i].fitness);
-				//Debug.Log(n.getString());
-				generatePhysicalShip(PopulationManager.shipArchives[0].root);
-			}
-		}
-	}
-
-	void Update()
-	{
-		currentTimer += Time.deltaTime;
-		if (currentTimer >= Config.STANDARD_GENERATION_TIME_LIMIT)
-		{
-			orbGenerator.resetOrbs();
-			ShipChromosomeNode n = generateRandomShipChromosome();
-			//Debug.Log(n.getString());
-			generatePhysicalShip(n);
-			currentTimer = 0;
-		}
-	}
-
-	private ShipChromosomeNode generateRandomShipChromosome()
-	{
-		return ShipChromosomeNode.generateRandomShip();
+		ShipChromosomeNode n = ShipChromosomeNode.generateRandomShip();
+		generatePhysicalShip(n);
 	}
 
 	private void generatePhysicalShip(ShipChromosomeNode root)
@@ -59,7 +19,7 @@ public class RandomShipCreator : MonoBehaviour
 		if (lastShip != null)
 		{
 			ShipArchive shipArchive = new ShipArchive(lastShip.rootNode, lastShip.getFitness());
-			PopulationManager.shipArchives.Add(shipArchive);
+			PopulationManager.instance.shipArchives.Add(shipArchive);
 
 			GameObject.Destroy(lastShip.gameObject);
 		}
