@@ -36,6 +36,7 @@ public class PopulationManager : MonoBehaviour
 
 	void Start()
 	{
+		Time.timeScale = Config.SIMULATION_TIME_SCALE;
 		generations = new List<Generation>();
 		shipCreators = new List<RandomShipCreator>(GameObject.FindObjectsOfType<RandomShipCreator>());
 		currentTimer = Config.STANDARD_GENERATION_TIME_LIMIT;

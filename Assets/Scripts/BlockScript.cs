@@ -5,7 +5,7 @@ public class BlockScript : MonoBehaviour
 {
 	public ShipController shipController;
 
-	void FixedUpdate()
+	void Update()//FixedUpdate()
 	{
 		shipController.addToFitness((shipController.getTarget() - transform.position).sqrMagnitude);
 	}
