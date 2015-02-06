@@ -26,8 +26,9 @@ public class PopulationManager : MonoBehaviour
 	}
 
 
-	public List<ShipArchive> shipArchives;
+	private List<Generation> generations;
 	private List<RandomShipCreator> shipCreators;
+	private Generation currentGeneration;
 	private OrbGeneratorScript orbGenerator;
 
 	float currentTimer;
@@ -35,10 +36,16 @@ public class PopulationManager : MonoBehaviour
 
 	void Start()
 	{
-		shipArchives = new List<ShipArchive>();
+		generations = new List<Generation>();
 		shipCreators = new List<RandomShipCreator>(GameObject.FindObjectsOfType<RandomShipCreator>());
 		currentTimer = Config.STANDARD_GENERATION_TIME_LIMIT;
 		orbGenerator = GameObject.FindObjectOfType<OrbGeneratorScript>();
+		currentGeneration = new Generation();
+	}
+
+	public void shipEvaluated(ShipArchive shipArchive)
+	{
+		currentGeneration.addShipArchive(shipArchive);
 	}
 
 	void Update()
@@ -47,6 +54,10 @@ public class PopulationManager : MonoBehaviour
 		if (currentTimer >= Config.STANDARD_GENERATION_TIME_LIMIT)
 		{
 			orbGenerator.resetOrbs();
+
+			generations.Add(currentGeneration);
+			currentGeneration = new Generation();
+
 			foreach (RandomShipCreator r in shipCreators)
 			{
 				r.generateRandomShip();

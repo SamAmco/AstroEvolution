@@ -4,11 +4,16 @@ using System.Collections.Generic;
 
 public class Generation 
 {
-	public List<ShipArchive> shipArchives;
+	private List<ShipArchive> shipArchives;
 
-	public Generation(List<ShipArchive> shipArchives)
+	public Generation() 
 	{
-		this.shipArchives = shipArchives.Sort();
+		shipArchives = new List<ShipArchive>();
+	}
+
+	public void addShipArchive(ShipArchive shipArchive)
+	{
+		shipArchives.Add(shipArchive);
 	}
 
 	public List<ShipArchive> SUS(uint numberToSelect)

@@ -19,7 +19,7 @@ public class RandomShipCreator : MonoBehaviour
 		if (lastShip != null)
 		{
 			ShipArchive shipArchive = new ShipArchive(lastShip.rootNode, lastShip.getFitness());
-			PopulationManager.instance.shipArchives.Add(shipArchive);
+			PopulationManager.instance.shipEvaluated(shipArchive);
 
 			GameObject.Destroy(lastShip.gameObject);
 		}
