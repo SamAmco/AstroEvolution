@@ -7,7 +7,7 @@ public class BlockScript : MonoBehaviour
 
 	void Update()//FixedUpdate()
 	{
-		shipController.addToFitness((shipController.getTarget() - transform.position).sqrMagnitude);
+		shipController.addToCumulativeDistance((shipController.getTarget() - transform.position).sqrMagnitude);
 	}
 
 	public void initialize(ShipChromosomeNode n, ShipController s)

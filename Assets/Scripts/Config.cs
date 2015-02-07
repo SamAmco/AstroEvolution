@@ -9,6 +9,7 @@ public class Config
 	public const float MAX_CHILD_ROTATION = 20f;
 	public const float STANDARD_GENERATION_TIME_LIMIT = 16f;
 	public const float SIMULATION_TIME_SCALE = 2.0f;
+	public const float FUEL_COST = 1600f;
 
 	public const string ENGINE_PREFAB_LOCATION = "Prefabs/EngineBlock";
 	public const string HEAVY_BLOCK_PREFAB_LOCATION = "Prefabs/HeavyBlock";

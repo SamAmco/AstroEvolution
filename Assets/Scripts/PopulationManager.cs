@@ -59,6 +59,7 @@ public class PopulationManager : MonoBehaviour
 			generations.Add(currentGeneration);
 			currentGeneration = new Generation();
 
+
 			foreach (RandomShipCreator r in shipCreators)
 			{
 				r.generateRandomShip();

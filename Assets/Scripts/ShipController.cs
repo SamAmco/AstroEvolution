@@ -4,16 +4,13 @@ using System.Collections;
 public class ShipController : MonoBehaviour 
 {
 	public int limbCount;
-	private double fitness;
+	private double cumulativeDistance = 0;
 	public ShipChromosomeNode rootNode;
 	public TargetableScript currentTarget;
 	private double lifetime;
-	private int orbsCollected;
-
-	void Start()
-	{
-		fitness = 0;
-	}
+	private int orbsCollected = 0;
+	private double fuelUsed = 0;
+	
 	void Update()
 	{
 		lifetime += Time.deltaTime;
@@ -24,14 +21,19 @@ public class ShipController : MonoBehaviour
 		++orbsCollected;
 	}
 
-	public void addToFitness(double d)
+	public void addToCumulativeDistance(double d)
 	{
-		fitness += d;
+		cumulativeDistance += d;
+	}
+
+	public void fuelUnitUsed()
+	{
+		fuelUsed += Config.FUEL_COST;
 	}
 
 	public double getFitness()
 	{
-		return ((fitness / (double)limbCount) / (double)lifetime) 
+		return (((cumulativeDistance + fuelUsed) / (double)limbCount) / (double)lifetime) 
 			* (double)Mathf.Pow(0.75f, (float)orbsCollected);
 	}
 

@@ -45,6 +45,7 @@ public class EngineScript : MonoBehaviour
 			                   	* new Vector3(0, Config.ENGINE_POWER, 0),
 			                   ForceMode.Force);
 			spriteRenderer.color = Color.red;
+			shipController.fuelUnitUsed();
 		}
 	}
 }
