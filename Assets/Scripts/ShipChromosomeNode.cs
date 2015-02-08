@@ -38,6 +38,49 @@ public class ShipChromosomeNode
 		return r;
 	}*/
 
+	public ShipChromosomeNode copyTree()
+	{
+		ShipChromosomeNode s = copyNode();
+
+		if (top != null)
+			s.top = top.copyTree(s);
+		if (left != null)
+			s.left = left.copyTree(s);
+		if (right != null)
+			s.right = right.copyTree(s);
+		if (bottom != null)
+			s.bottom = bottom.copyTree(s);
+
+		return s;
+	}
+
+	private ShipChromosomeNode copyTree(ShipChromosomeNode parent)
+	{
+		ShipChromosomeNode s = copyNode();
+
+		if (parentPos == ChildNode.TOP)
+			s.top = parent;
+		else if (top != null)
+			s.top = top.copyTree(s);
+
+		if (parentPos == ChildNode.LEFT)
+			s.left = parent;
+		else if (left != null)
+			s.left = left.copyTree(s);
+
+		if (parentPos == ChildNode.RIGHT)
+			s.right = parent;
+		else if (right != null)
+			s.right = right.copyTree(s);
+
+		if (parentPos == ChildNode.BOTTOM)
+			s.bottom = parent;
+		else if (bottom != null)
+			s.bottom = bottom.copyTree(s);
+
+		return s;
+	}
+
 	public ShipChromosomeNode copyNode()
 	{
 		ShipChromosomeNode s = new ShipChromosomeNode();

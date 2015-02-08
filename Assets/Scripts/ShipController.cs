@@ -4,16 +4,28 @@ using System.Collections;
 public class ShipController : MonoBehaviour 
 {
 	public int limbCount;
-	private double cumulativeDistance = 0;
+	private double cumulativeDistanceFromTarget = 0;
 	public ShipChromosomeNode rootNode;
 	public TargetableScript currentTarget;
 	private double lifetime;
 	private int orbsCollected = 0;
 	private double fuelUsed = 0;
-	
+	private Vector3 lastPos;
+	private double stillnessValue = 0;
+
+	void Start()
+	{
+		lastPos = transform.position;
+	}
+
 	void Update()
 	{
 		lifetime += Time.deltaTime;
+
+		if ((lastPos - transform.position).sqrMagnitude == 0)
+			stillnessValue += Config.STILLNESS_COST;
+
+		lastPos = transform.position;
 	}
 
 	public void collectedOrb()
@@ -23,7 +35,7 @@ public class ShipController : MonoBehaviour
 
 	public void addToCumulativeDistance(double d)
 	{
-		cumulativeDistance += d;
+		cumulativeDistanceFromTarget += d;
 	}
 
 	public void fuelUnitUsed()
@@ -33,7 +45,8 @@ public class ShipController : MonoBehaviour
 
 	public double getFitness()
 	{
-		return (((cumulativeDistance + fuelUsed) / (double)limbCount) / (double)lifetime) 
+		return (((cumulativeDistanceFromTarget / (double)limbCount) + fuelUsed + stillnessValue) 
+		         / (double)lifetime) 
 			* (double)Mathf.Pow(0.75f, (float)orbsCollected);
 	}
 
