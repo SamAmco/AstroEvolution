@@ -14,16 +14,18 @@ public class RandomShipCreator : MonoBehaviour
 		generatePhysicalShip(n);
 	}
 
-	private void generatePhysicalShip(ShipChromosomeNode root)
+	public void evaluateShip(PopulationManager populationManager)
 	{
 		if (lastShip != null)
 		{
 			ShipArchive shipArchive = new ShipArchive(lastShip.rootNode, lastShip.getFitness());
-			PopulationManager.instance.shipEvaluated(shipArchive);
-
+			populationManager.shipEvaluated(shipArchive);
 			GameObject.Destroy(lastShip.gameObject);
 		}
+	}
 
+	public void generatePhysicalShip(ShipChromosomeNode root)
+	{
 		GameObject g = (GameObject)GameObject.Instantiate(Resources.Load(Config.HEAVY_BLOCK_PREFAB_LOCATION),
 		                       transform.position,
 		                       Quaternion.identity);

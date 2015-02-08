@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public enum ChildNode
 {
@@ -25,7 +26,7 @@ public class ShipChromosomeNode
 
 	public ChildNode parentPos;
 
-	int depth;
+	public int depth;
 
 	/*public int limbCount()
 	{
@@ -36,6 +37,37 @@ public class ShipChromosomeNode
 
 		return r;
 	}*/
+
+	public ShipChromosomeNode copyNode()
+	{
+		ShipChromosomeNode s = new ShipChromosomeNode();
+		s.isEngine = isEngine;
+		s.relativeRotation = relativeRotation;
+		s.startEngageAngle = startEngageAngle;
+		s.rangeEngageAngle = rangeEngageAngle;
+		s.parentPos = parentPos;
+		s.depth = depth;
+
+		return s;
+	}
+
+	public List<ShipChromosomeNode> getListOfNodes()
+	{
+		List<ShipChromosomeNode> allNodes = new List<ShipChromosomeNode>();
+
+		allNodes.Add(this);
+
+		if (top != null && parentPos != ChildNode.TOP)
+			allNodes.AddRange(top.getListOfNodes());
+		if (bottom != null && parentPos != ChildNode.BOTTOM)
+			allNodes.AddRange(bottom.getListOfNodes());
+		if (left != null && parentPos != ChildNode.LEFT)
+			allNodes.AddRange(left.getListOfNodes());
+		if (right != null && parentPos != ChildNode.RIGHT)
+			allNodes.AddRange(right.getListOfNodes());
+
+		return allNodes;
+	}
 
 	public string getString()
 	{
