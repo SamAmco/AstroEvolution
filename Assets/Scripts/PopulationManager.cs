@@ -87,17 +87,8 @@ public class PopulationManager : MonoBehaviour
 				r.evaluateShip(this);
 			}
 
-			//PERFORM SELECTION 
-			string genOut = "";
-			genOut += currentGeneration.size();
-			genOut += shipCreators.Count;
+			//PERFORM SELECTION
 			List<ShipChromosomeNode> selectionList = currentGeneration.SUS((uint)shipCreators.Count);
-			genOut += selectionList.Count;
-			foreach (ShipChromosomeNode scn in selectionList)
-			{
-				genOut += scn.getString() + "\n";
-			}
-			Debug.Log(genOut);
 
 			//PERFORM CROSSOVER
 			List<ShipChromosomeNode> nextGeneration = CrossoverAndMutationManager.TreeCrossover(selectionList);

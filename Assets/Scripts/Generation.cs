@@ -28,7 +28,6 @@ public class Generation
 		foreach (ShipArchive s in shipArchives)
 		{
 			sumOfFitness += s.fitness;
-			Debug.Log(s.fitness);
 		}
 		double dist = 1d / (double)numberToSelect;
 		double startingPoint = (double)Random.Range(0f, 1f) * dist;
@@ -36,6 +35,7 @@ public class Generation
 		int numSelected = 1;
 		List<ShipChromosomeNode> selectedChromosomes = new List<ShipChromosomeNode>();
 		selectedChromosomes.Add(shipArchives[0].root.copyTree());
+		selectedChromosomes[0].isBest = true;
 		while (numSelected < numberToSelect)
 		{
 			double point = startingPoint + (dist * numSelected);

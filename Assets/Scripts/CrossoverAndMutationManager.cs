@@ -13,6 +13,7 @@ public class CrossoverAndMutationManager
 		{
 			if (rnd.NextDouble() < Config.MUTATION_PROBABILITY)
 			{
+				Debug.Log("Mutating");
 				List<ShipChromosomeNode> subNodes = s.getListOfNodes();
 				ShipChromosomeNode mutateNode = selectRandomElement(subNodes, false);
 
@@ -63,6 +64,9 @@ public class CrossoverAndMutationManager
 	public static List<ShipChromosomeNode> TreeCrossover(List<ShipChromosomeNode> selectionList)
 	{
 		List<ShipChromosomeNode> outputPopulation = new List<ShipChromosomeNode>();
+
+		if (selectionList[0].isBest)
+			outputPopulation.Add(selectionList[0].copyTree());
 
 		while (selectionList.Count >= 2)
 		{
