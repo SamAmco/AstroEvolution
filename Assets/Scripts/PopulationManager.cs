@@ -81,25 +81,35 @@ public class PopulationManager : MonoBehaviour
 		{
 			orbGenerator.resetOrbs();
 
+			//EVALUATE SHIPS
 			foreach (RandomShipCreator r in shipCreators)
 			{
 				r.evaluateShip(this);
 			}
-			List<ShipChromosomeNode> selectionList = currentGeneration.SUS((uint)shipCreators.Count);
+
+			//PERFORM SELECTION 
 			string genOut = "";
+			genOut += currentGeneration.size();
+			genOut += shipCreators.Count;
+			List<ShipChromosomeNode> selectionList = currentGeneration.SUS((uint)shipCreators.Count);
+			genOut += selectionList.Count;
 			foreach (ShipChromosomeNode scn in selectionList)
 			{
 				genOut += scn.getString() + "\n";
 			}
 			Debug.Log(genOut);
+
+			//PERFORM CROSSOVER
 			List<ShipChromosomeNode> nextGeneration = CrossoverAndMutationManager.TreeCrossover(selectionList);
+
+			//PERFORM MUTATION
 			CrossoverAndMutationManager.Mutate(nextGeneration);
 
-
-
+			//RESET THE CURRENT GENERATION AND STORE THE OLD ONE
 			generations.Add(currentGeneration);
 			currentGeneration = new Generation();
 
+			//INITIALIZE THE NEXT GENERATION
 			for (int i = 0; i < shipCreators.Count; ++i)
 			{
 				shipCreators[i].generatePhysicalShip(nextGeneration[i]);

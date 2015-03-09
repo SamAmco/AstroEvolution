@@ -5,7 +5,7 @@ public class BlockScript : MonoBehaviour
 {
 	public ShipController shipController;
 
-	void Update()//FixedUpdate()
+	void Update()
 	{
 		shipController.addToCumulativeDistance((shipController.getTarget() - transform.position).sqrMagnitude);
 	}
