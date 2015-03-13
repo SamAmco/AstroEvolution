@@ -7,13 +7,6 @@ public class EngineScript : MonoBehaviour
 	float startEngageAngle;
 	float rangeEngageAngle;
 
-	SpriteRenderer spriteRenderer;
-
-	void Start()
-	{
-		spriteRenderer = GetComponent<SpriteRenderer>();
-	}
-
 	public void initialize(ShipController shipController,
 	                       float startEngageAngle,
 	                       float rangeEngageAngle)
@@ -26,7 +19,7 @@ public class EngineScript : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
 	{
-		spriteRenderer.color = Color.white;
+		renderer.material.color = Color.white;
 		Vector3 forward = shipController.getForward();
 		Vector3 target = shipController.getTarget();
 
@@ -41,10 +34,12 @@ public class EngineScript : MonoBehaviour
 		if (angle > startEngageAngle && angle < startEngageAngle + rangeEngageAngle
 		    || startEngageAngle + rangeEngageAngle > 360 && angle < (startEngageAngle + rangeEngageAngle) % 360)
 		{
-			rigidbody.AddForce(transform.rotation 
-			                   	* new Vector3(0, Config.ENGINE_POWER, 0),
-			                   ForceMode.Force);
-			spriteRenderer.color = Color.red;
+			shipController.addForceAtPosition(transform.rotation 
+			                                  * new Vector3(0, Config.ENGINE_POWER, 0),
+			                                  transform.position,
+			                                  ForceMode.Force);
+
+			renderer.material.color = Color.red;
 			shipController.fuelUnitUsed();
 		}
 	}

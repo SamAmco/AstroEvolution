@@ -25,11 +25,32 @@ public class BlockScript : MonoBehaviour
 			createChild(n.right, ChildNode.LEFT, s);
 	}
 
+	public void combineSubMeshes()
+	{
+		MeshCollider[] meshColliders = GetComponentsInChildren<MeshCollider>();
+		CombineInstance[] combine = new CombineInstance[meshColliders.Length];
+		int i = 0;
+		while (i < meshColliders.Length) 
+		{
+			combine[i].mesh = meshColliders[i].sharedMesh;
+			//Vector3 tempScale = meshColliders[i].transform.localScale;
+			//meshColliders[i].transform.localScale = new Vector3(1,1,1);
+			combine[i].transform = meshColliders[i].transform.localToWorldMatrix;
+			//meshFilters[i].transform.localScale = tempScale;
+			meshColliders[i].GetComponent<MeshCollider>().enabled = false;
+			++i;
+		}
+		transform.GetComponent<MeshCollider>().mesh = new Mesh();
+		transform.GetComponent<MeshCollider>().mesh.CombineMeshes(combine);
+		transform.GetComponent<MeshCollider>().enabled = true;
+		transform.gameObject.SetActive(true);
+	}
+	
 	void CollectedOrb()
 	{
 		shipController.collectedOrb();
 	}
-
+	
 	//c indicates where the child's parent is in relation to it
 	private void createChild(ShipChromosomeNode n, ChildNode c, ShipController s)
 	{
@@ -49,7 +70,7 @@ public class BlockScript : MonoBehaviour
 		g.transform.localRotation = Quaternion.Euler(0, 0, n.relativeRotation);
 
 
-		Vector3 colliderSize = ((BoxCollider)g.collider).size;
+		Vector3 colliderSize = g.GetComponent<MeshCollider>().bounds.size;
 
 		switch (c)
 		{
@@ -79,11 +100,10 @@ public class BlockScript : MonoBehaviour
 			return;
 		}
 
+		//FixedJoint fixedJoint = g.AddComponent<FixedJoint>();
+		//fixedJoint.enableCollision = false;
+		//fixedJoint.connectedBody = rigidbody;
 
-
-		FixedJoint fixedJoint = g.AddComponent<FixedJoint>();
-		fixedJoint.enableCollision = false;
-		fixedJoint.connectedBody = rigidbody;
 
 		BlockScript b = g.GetComponent<BlockScript>();
 		

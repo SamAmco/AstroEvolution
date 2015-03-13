@@ -28,6 +28,11 @@ public class ShipController : MonoBehaviour
 		lastPos = transform.position;
 	}
 
+	public void addForceAtPosition(Vector3 force, Vector3 position, ForceMode forceMode)
+	{
+		rigidbody.AddForceAtPosition(force, position, forceMode);
+	}
+
 	public void collectedOrb()
 	{
 		++orbsCollected;

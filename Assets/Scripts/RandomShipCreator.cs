@@ -27,8 +27,14 @@ public class RandomShipCreator : MonoBehaviour
 	public void generatePhysicalShip(ShipChromosomeNode root)
 	{
 		GameObject g = (GameObject)GameObject.Instantiate(Resources.Load(Config.HEAVY_BLOCK_PREFAB_LOCATION),
-		                       transform.position,
+		                       Vector3.zero,
 		                       Quaternion.identity);
+
+		Rigidbody r = g.AddComponent<Rigidbody>();
+		r.mass = 0.8f * root.getListOfNodes().Count;
+		r.drag = 0.2f;
+		r.angularDrag = 0.1f;
+		r.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY;
 
 		BlockScript b = g.GetComponent<BlockScript>();
 		ShipController s = g.AddComponent<ShipController>();
@@ -37,6 +43,8 @@ public class RandomShipCreator : MonoBehaviour
 		lastShip = s;
 
 		b.initialize(root, s);
+		b.combineSubMeshes();
+		g.transform.position = transform.position;
 		g.SetActive(false);
 	}
 
