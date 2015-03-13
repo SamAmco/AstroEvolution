@@ -42346,7 +42346,7 @@ ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00
 }\par
 \pard\par
 \par
-\par
+\b 05/02/2015\b0\par
 - ships are ugly\par
 - spinning problem\par
 - expensive physics\par
@@ -42358,7 +42358,8 @@ return ((fitness / (double)limbCount) / (double)lifetime) \par
 \par
 \par
 \par
-\par
+\b 13/03/2015\b0\par
+- I've given them a new problem to solve which is to follow a path of orbs instead of just try and collect orbs around them .. It has enabled me to narrow down more easily what's going wrong with the GA. The GA isn't very stable, probably because of the particular method of crossover that is specific to tree representations. I've solved some of the stability issues i believe by keeping the best from each generation and by identifiying problems in my SUS algorithm. Before i was using 1 - (fitness / sumOfFitness) .. That doesn't work -_- .. take 1,2,3,4 as fitnesses, the sum is therefore 10, the proportional fitnesses you would end up with would therefore be 0.9,0.8,0.7,0.6.. That explains the extreme convergence problem i was having before because the SUS only looks between 0 and 1, so it would make 90% of the parents just copies of the first one. Now I calculate the sumOfFitness as the sum of 1/fitness and the proportionate fitness as (1/fitness)/sumOfFitness .. I can certainly now see some convergence and some problem solving taking place. The main issue now is speed. The use of fixed joints to generate the NPC's mesh's is very primitive and in-efficient. The Physics engine has to resolve multiple forces per fixed joint per ship each frame. Generally the GA slows to a near hault before i reach a reasonably good solution. Now I'm going to have a hack at some mesh generation, which should massively speed things up and allow me to find a solution!\par
 \par
 \par
 \par

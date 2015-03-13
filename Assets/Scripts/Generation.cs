@@ -27,7 +27,7 @@ public class Generation
 		double sumOfFitness = 0;
 		foreach (ShipArchive s in shipArchives)
 		{
-			sumOfFitness += s.fitness;
+			sumOfFitness += 1d / s.fitness;
 		}
 		double dist = 1d / (double)numberToSelect;
 		double startingPoint = (double)Random.Range(0f, 1f) * dist;
@@ -43,7 +43,7 @@ public class Generation
 			double fitnessCount = 0;
 			foreach (ShipArchive s in shipArchives)
 			{
-				fitnessCount += getProportionateFitness(s.fitness, sumOfFitness, shipArchives.Count);
+				fitnessCount += getProportionateFitness(s.fitness, sumOfFitness);
 				if (point < fitnessCount)
 				{
 					selectedChromosomes.Add(s.root.copyTree());
@@ -55,9 +55,8 @@ public class Generation
 		return selectedChromosomes;
 	}
 
-	private static double getProportionateFitness(double fitness, double sumOfFitness, double numItems)
+	private static double getProportionateFitness(double fitness, double sumOfFitness)
 	{
-		return (1d - (fitness / sumOfFitness)) / (numItems - 1d);
+		return 1d / (fitness * sumOfFitness);
 	}
-
 }

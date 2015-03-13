@@ -37,5 +37,32 @@ public class RandomShipCreator : MonoBehaviour
 		lastShip = s;
 
 		b.initialize(root, s);
+		g.SetActive(false);
+	}
+
+	public void activate()
+	{
+		lastShip.gameObject.SetActive(true);
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

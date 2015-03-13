@@ -4,35 +4,13 @@ using System.Collections.Generic;
 
 public class PopulationManager : MonoBehaviour
 {
-	private static PopulationManager _instance;
-	public static PopulationManager instance
-	{
-		get
-		{
-			if (_instance == null)
-			{
-				_instance = GameObject.FindObjectOfType<PopulationManager>();
-
-				if (_instance == null)
-				{
-					GameObject g = new GameObject();
-					_instance = g.AddComponent<PopulationManager>();
-				}
-			}
-
-			return _instance;
-		}
-		private set {_instance = value;}
-	}
-
-
 	private List<Generation> generations;
 	private List<RandomShipCreator> shipCreators;
 	private Generation currentGeneration;
 	private OrbGeneratorScript orbGenerator;
 
-	float currentTimer;
-
+	float frameCounter;
+	bool evaluationFramePassed = false;
 
 	void Start()
 	{
@@ -40,7 +18,7 @@ public class PopulationManager : MonoBehaviour
 
 		generations = new List<Generation>();
 		shipCreators = new List<RandomShipCreator>(GameObject.FindObjectsOfType<RandomShipCreator>());
-		currentTimer = 0;
+		frameCounter = 0;
 		orbGenerator = GameObject.FindObjectOfType<OrbGeneratorScript>();
 		currentGeneration = new Generation();
 
@@ -48,7 +26,8 @@ public class PopulationManager : MonoBehaviour
 		{
 			r.generateRandomShip();
 		}
-
+		activateGeneration();
+		
 		/*ShipChromosomeNode s1 = ShipChromosomeNode.generateRandomShip();
 		ShipChromosomeNode s2 = ShipChromosomeNode.generateRandomShip();
 		Debug.Log(s1.getString());
@@ -76,57 +55,57 @@ public class PopulationManager : MonoBehaviour
 
 	void Update()
 	{
-		currentTimer += Time.deltaTime;
-		if (currentTimer >= Config.STANDARD_GENERATION_TIME_LIMIT)
+		++frameCounter;
+		if (frameCounter >= Config.STANDARD_GENERATION_FRAME_COUNT)
 		{
-			orbGenerator.resetOrbs();
-
-			//EVALUATE SHIPS
-			foreach (RandomShipCreator r in shipCreators)
+			if (!evaluationFramePassed)
 			{
-				r.evaluateShip(this);
+				orbGenerator.resetOrbs();
+				
+				//EVALUATE SHIPS
+				foreach (RandomShipCreator r in shipCreators)
+				{
+					r.evaluateShip(this);
+				}
+				evaluationFramePassed = true;
 			}
-
-			//PERFORM SELECTION
-			List<ShipChromosomeNode> selectionList = currentGeneration.SUS((uint)shipCreators.Count);
-
-			//PERFORM CROSSOVER
-			List<ShipChromosomeNode> nextGeneration = CrossoverAndMutationManager.TreeCrossover(selectionList);
-
-			//PERFORM MUTATION
-			CrossoverAndMutationManager.Mutate(nextGeneration);
-
-			//RESET THE CURRENT GENERATION AND STORE THE OLD ONE
-			generations.Add(currentGeneration);
-			currentGeneration = new Generation();
-
-			//INITIALIZE THE NEXT GENERATION
-			for (int i = 0; i < shipCreators.Count; ++i)
+			else
 			{
-				shipCreators[i].generatePhysicalShip(nextGeneration[i]);
+				//PERFORM SELECTION
+				List<ShipChromosomeNode> selectionList = currentGeneration.SUS((uint)shipCreators.Count);
+				
+				//PERFORM CROSSOVER
+				List<ShipChromosomeNode> nextGeneration = CrossoverAndMutationManager.TreeCrossover(selectionList);
+				
+				//PERFORM MUTATION
+				CrossoverAndMutationManager.Mutate(nextGeneration);
+				
+				//RESET THE CURRENT GENERATION AND STORE THE OLD ONE
+				generations.Add(currentGeneration);
+				currentGeneration = new Generation();
+				
+				//INITIALIZE THE NEXT GENERATION
+				for (int i = 0; i < shipCreators.Count; ++i)
+				{
+					shipCreators[i].generatePhysicalShip(nextGeneration[i]);
+				}
+				activateGeneration();
+				frameCounter = 0;
+				evaluationFramePassed = false;
 			}
-			currentTimer = 0;
+		}
+	}
+
+	private void activateGeneration()
+	{
+		foreach(RandomShipCreator r in shipCreators)
+		{
+			r.activate();
 		}
 	}
 
 	void OnGUI()
 	{
-		/*if (guiEnabled)
-		{
-			if (GUI.Button(new Rect(0,0, 200, 50), "GENERATE RANDOM SHIP"))
-			{
-				ShipChromosomeNode n = generateRandomShipChromosome();
-				//Debug.Log(n.getString());
-				generatePhysicalShip(n);
-			}
-			if (GUI.Button(new Rect(200,0, 200, 50), "GENERATE BEST SHIP"))
-			{
-				PopulationManager.shipArchives.Sort();
-				for (int i = 0; i < PopulationManager.shipArchives.Count; ++i)
-					Debug.Log(PopulationManager.shipArchives[i].fitness);
-				//Debug.Log(n.getString());
-				generatePhysicalShip(PopulationManager.shipArchives[0].root);
-			}
-		}*/
+		GUI.Label(new Rect(10, 10, 100, 20), frameCounter + "/" + Config.STANDARD_GENERATION_FRAME_COUNT);
 	}
 }
