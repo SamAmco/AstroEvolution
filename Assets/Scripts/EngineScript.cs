@@ -34,13 +34,14 @@ public class EngineScript : MonoBehaviour
 		if (angle > startEngageAngle && angle < startEngageAngle + rangeEngageAngle
 		    || startEngageAngle + rangeEngageAngle > 360 && angle < (startEngageAngle + rangeEngageAngle) % 360)
 		{
-			shipController.addForceAtPosition(transform.rotation 
+			if(shipController.addForceAtPosition(transform.rotation 
 			                                  * new Vector3(0, Config.ENGINE_POWER, 0),
 			                                  transform.position,
-			                                  ForceMode.Force);
-
-			renderer.material.color = Color.red;
-			shipController.fuelUnitUsed();
+			                                  ForceMode.Force))
+			{
+				renderer.material.color = Color.red;
+				shipController.fuelUnitUsed();
+			}
 		}
 	}
 }

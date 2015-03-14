@@ -7,13 +7,30 @@ public class CrossoverAndMutationManager
 {
 	private static System.Random rnd = new System.Random();
 
-	public static void Mutate(List<ShipChromosomeNode> crossoverList)
+	public static void NodeMutate(List<ShipChromosomeNode> crossoverList)
 	{
 		foreach (ShipChromosomeNode s in crossoverList)
 		{
 			if (rnd.NextDouble() < Config.MUTATION_PROBABILITY)
 			{
-				Debug.Log("Mutating");
+				List<ShipChromosomeNode> subNodes = s.getListOfNodes();
+				ShipChromosomeNode mutateNode = selectRandomElement(subNodes, false);
+
+				mutateNode.isEngine = UnityEngine.Random.Range(0, 2) == 1;
+				mutateNode.startEngageAngle = UnityEngine.Random.Range(0, 360);
+				mutateNode.rangeEngageAngle = UnityEngine.Random.Range(0, 360);
+				mutateNode.relativeRotation = UnityEngine.Random.Range(-Config.MAX_CHILD_ROTATION,
+				                                           Config.MAX_CHILD_ROTATION);
+			}
+		}
+	}
+
+	public static void TreeMutate(List<ShipChromosomeNode> crossoverList)
+	{
+		foreach (ShipChromosomeNode s in crossoverList)
+		{
+			if (rnd.NextDouble() < Config.MUTATION_PROBABILITY)
+			{
 				List<ShipChromosomeNode> subNodes = s.getListOfNodes();
 				ShipChromosomeNode mutateNode = selectRandomElement(subNodes, false);
 
@@ -64,9 +81,6 @@ public class CrossoverAndMutationManager
 	public static List<ShipChromosomeNode> TreeCrossover(List<ShipChromosomeNode> selectionList)
 	{
 		List<ShipChromosomeNode> outputPopulation = new List<ShipChromosomeNode>();
-
-		if (selectionList[0].isBest)
-			outputPopulation.Add(selectionList[0].copyTree());
 
 		while (selectionList.Count >= 2)
 		{

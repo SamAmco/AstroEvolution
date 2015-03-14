@@ -19,7 +19,6 @@ public class ShipChromosomeNode
 	public ShipChromosomeNode right;
 
 	public bool isEngine;
-	public bool isBest = false;
 
 	public float relativeRotation;
 	public float startEngageAngle;

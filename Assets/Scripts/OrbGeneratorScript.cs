@@ -3,13 +3,13 @@ using System.Collections;
 
 public class OrbGeneratorScript : MonoBehaviour 
 {
-	private OrbScript[] orbs;
+	private GameObject[] orbs;
 	public Object orbPrefab;
 	private Vector3[] orbPositions;
 
 	void Start()
 	{
-		orbs = GameObject.FindObjectsOfType<OrbScript>();
+		orbs = GameObject.FindGameObjectsWithTag("Orb");
 		orbPositions = new Vector3[orbs.Length];
 		for (int i =0; i < orbs.Length; i++)
 		{
@@ -19,16 +19,16 @@ public class OrbGeneratorScript : MonoBehaviour
 
 	public void resetOrbs()
 	{
-		foreach (OrbScript o in orbs)
+		foreach (GameObject o in orbs)
 		{
 			if (o != null)
-				GameObject.Destroy(o.gameObject);
+				GameObject.Destroy(o);
 		}
 
 		int i = 0;
 		foreach (Vector3 v in orbPositions)
 		{
-			orbs[i] = ((GameObject)Instantiate(orbPrefab, v, Quaternion.identity)).GetComponent<OrbScript>();
+			orbs[i] = (GameObject)Instantiate(orbPrefab, v, Quaternion.identity);
 			++i;
 		}
 	}

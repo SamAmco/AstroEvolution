@@ -40,8 +40,8 @@ public class BlockScript : MonoBehaviour
 			meshColliders[i].GetComponent<MeshCollider>().enabled = false;
 			++i;
 		}
-		transform.GetComponent<MeshCollider>().mesh = new Mesh();
-		transform.GetComponent<MeshCollider>().mesh.CombineMeshes(combine);
+		transform.GetComponent<MeshCollider>().sharedMesh = new Mesh();
+		transform.GetComponent<MeshCollider>().sharedMesh.CombineMeshes(combine);
 		transform.GetComponent<MeshCollider>().enabled = true;
 		transform.gameObject.SetActive(true);
 	}

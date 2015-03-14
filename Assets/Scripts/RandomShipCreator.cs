@@ -31,9 +31,9 @@ public class RandomShipCreator : MonoBehaviour
 		                       Quaternion.identity);
 
 		Rigidbody r = g.AddComponent<Rigidbody>();
-		r.mass = 0.8f * root.getListOfNodes().Count;
-		r.drag = 0.2f;
-		r.angularDrag = 0.1f;
+		r.mass = Config.BLOCK_MASS * root.getListOfNodes().Count;
+		r.drag = Config.BLOCK_DRAG;
+		r.angularDrag = Config.BLOCK_ANGULAR_DRAG;
 		r.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY;
 
 		BlockScript b = g.GetComponent<BlockScript>();

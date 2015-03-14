@@ -8,9 +8,11 @@ public class PopulationManager : MonoBehaviour
 	private List<RandomShipCreator> shipCreators;
 	private Generation currentGeneration;
 	private OrbGeneratorScript orbGenerator;
+	private ShipArchive bestOfAllTime;
 
 	float frameCounter;
 	bool evaluationFramePassed = false;
+	string lastFitnessesOutput = "";
 
 	void Start()
 	{
@@ -21,6 +23,7 @@ public class PopulationManager : MonoBehaviour
 		frameCounter = 0;
 		orbGenerator = GameObject.FindObjectOfType<OrbGeneratorScript>();
 		currentGeneration = new Generation();
+		bestOfAllTime = new ShipArchive(null, double.MaxValue);
 
 		foreach (RandomShipCreator r in shipCreators)
 		{
@@ -60,7 +63,7 @@ public class PopulationManager : MonoBehaviour
 		{
 			if (!evaluationFramePassed)
 			{
-				orbGenerator.resetOrbs();
+				//orbGenerator.resetOrbs();
 				
 				//EVALUATE SHIPS
 				foreach (RandomShipCreator r in shipCreators)
@@ -71,21 +74,30 @@ public class PopulationManager : MonoBehaviour
 			}
 			else
 			{
+				lastFitnessesOutput = "";
+				foreach (ShipArchive s in currentGeneration.getShipArchives())
+				{
+					lastFitnessesOutput += s.fitness.ToString("F2") + "\n";
+					if (s.fitness < bestOfAllTime.fitness)
+						bestOfAllTime = new ShipArchive(s.root.copyTree(), s.fitness);
+				}
 				//PERFORM SELECTION
 				List<ShipChromosomeNode> selectionList = currentGeneration.SUS((uint)shipCreators.Count);
 				
 				//PERFORM CROSSOVER
-				List<ShipChromosomeNode> nextGeneration = CrossoverAndMutationManager.TreeCrossover(selectionList);
+				List<ShipChromosomeNode> nextGeneration = 
+					CrossoverAndMutationManager.TreeCrossover(selectionList);
 				
 				//PERFORM MUTATION
-				CrossoverAndMutationManager.Mutate(nextGeneration);
+				CrossoverAndMutationManager.NodeMutate(nextGeneration);
 				
 				//RESET THE CURRENT GENERATION AND STORE THE OLD ONE
 				generations.Add(currentGeneration);
 				currentGeneration = new Generation();
 				
 				//INITIALIZE THE NEXT GENERATION
-				for (int i = 0; i < shipCreators.Count; ++i)
+				shipCreators[0].generatePhysicalShip(bestOfAllTime.root);
+				for (int i = 1; i < shipCreators.Count; ++i)
 				{
 					shipCreators[i].generatePhysicalShip(nextGeneration[i]);
 				}
@@ -107,5 +119,6 @@ public class PopulationManager : MonoBehaviour
 	void OnGUI()
 	{
 		GUI.Label(new Rect(10, 10, 100, 20), frameCounter + "/" + Config.STANDARD_GENERATION_FRAME_COUNT);
+		GUI.Label(new Rect(10, 25, 200, 500), lastFitnessesOutput);
 	}
 }

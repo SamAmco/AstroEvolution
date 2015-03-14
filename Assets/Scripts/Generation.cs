@@ -21,6 +21,11 @@ public class Generation
 		shipArchives.Add(shipArchive);
 	}
 
+	public List<ShipArchive> getShipArchives()
+	{
+		return shipArchives;
+	}
+
 	public List<ShipChromosomeNode> SUS(uint numberToSelect)
 	{
 		shipArchives.Sort();
@@ -32,10 +37,8 @@ public class Generation
 		double dist = 1d / (double)numberToSelect;
 		double startingPoint = (double)Random.Range(0f, 1f) * dist;
 
-		int numSelected = 1;
+		int numSelected = 0;
 		List<ShipChromosomeNode> selectedChromosomes = new List<ShipChromosomeNode>();
-		selectedChromosomes.Add(shipArchives[0].root.copyTree());
-		selectedChromosomes[0].isBest = true;
 		while (numSelected < numberToSelect)
 		{
 			double point = startingPoint + (dist * numSelected);
