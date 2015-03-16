@@ -4,7 +4,6 @@ using System.Collections;
 public class OrbGeneratorScript : MonoBehaviour 
 {
 	private GameObject[] orbs;
-	public Object orbPrefab;
 	private Vector3[] orbPositions;
 
 	void Start()
@@ -21,15 +20,7 @@ public class OrbGeneratorScript : MonoBehaviour
 	{
 		foreach (GameObject o in orbs)
 		{
-			if (o != null)
-				GameObject.Destroy(o);
-		}
-
-		int i = 0;
-		foreach (Vector3 v in orbPositions)
-		{
-			orbs[i] = (GameObject)Instantiate(orbPrefab, v, Quaternion.identity);
-			++i;
+			o.SetActive(true);
 		}
 	}
 }

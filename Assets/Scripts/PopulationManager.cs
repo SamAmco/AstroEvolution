@@ -10,7 +10,7 @@ public class PopulationManager : MonoBehaviour
 	private OrbGeneratorScript orbGenerator;
 	private ShipArchive bestOfAllTime;
 
-	float frameCounter;
+	float generationTimeCounter;
 	bool evaluationFramePassed = false;
 	string lastFitnessesOutput = "";
 
@@ -20,7 +20,7 @@ public class PopulationManager : MonoBehaviour
 
 		generations = new List<Generation>();
 		shipCreators = new List<RandomShipCreator>(GameObject.FindObjectsOfType<RandomShipCreator>());
-		frameCounter = 0;
+		generationTimeCounter = 0;
 		orbGenerator = GameObject.FindObjectOfType<OrbGeneratorScript>();
 		currentGeneration = new Generation();
 		bestOfAllTime = new ShipArchive(null, double.MaxValue);
@@ -58,12 +58,12 @@ public class PopulationManager : MonoBehaviour
 
 	void Update()
 	{
-		++frameCounter;
-		if (frameCounter >= Config.STANDARD_GENERATION_FRAME_COUNT)
+		generationTimeCounter += Time.deltaTime;
+		if (generationTimeCounter >= Config.STANDARD_GENERATION_TIME)
 		{
 			if (!evaluationFramePassed)
 			{
-				//orbGenerator.resetOrbs();
+				orbGenerator.resetOrbs();
 				
 				//EVALUATE SHIPS
 				foreach (RandomShipCreator r in shipCreators)
@@ -102,7 +102,7 @@ public class PopulationManager : MonoBehaviour
 					shipCreators[i].generatePhysicalShip(nextGeneration[i]);
 				}
 				activateGeneration();
-				frameCounter = 0;
+				generationTimeCounter = 0;
 				evaluationFramePassed = false;
 			}
 		}
@@ -118,7 +118,7 @@ public class PopulationManager : MonoBehaviour
 
 	void OnGUI()
 	{
-		GUI.Label(new Rect(10, 10, 100, 20), frameCounter + "/" + Config.STANDARD_GENERATION_FRAME_COUNT);
+		GUI.Label(new Rect(10, 10, 100, 20), generationTimeCounter + "/" + Config.STANDARD_GENERATION_TIME);
 		GUI.Label(new Rect(10, 25, 200, 500), lastFitnessesOutput);
 	}
 }

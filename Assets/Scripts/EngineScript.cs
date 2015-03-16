@@ -16,12 +16,14 @@ public class EngineScript : MonoBehaviour
 		this.rangeEngageAngle = rangeEngageAngle;
 	}
 
-	// Update is called once per frame
-	void Update () 
+	void FixedUpdate () 
 	{
+		if (!shipController.initialized)
+			return;
+
 		renderer.material.color = Color.white;
 		Vector3 forward = shipController.getForward();
-		Vector3 target = shipController.getTarget();
+		Vector3 target = shipController.getTarget() - transform.position;
 
 		Vector2 from = new Vector2(forward.x, forward.y);
 		Vector2 to = new Vector2(target.x, target.y);
@@ -31,8 +33,8 @@ public class EngineScript : MonoBehaviour
 		if (Vector3.Cross(from, to).z > 0)
 			angle = 360f - angle;
 
-		if (angle > startEngageAngle && angle < startEngageAngle + rangeEngageAngle
-		    || startEngageAngle + rangeEngageAngle > 360 && angle < (startEngageAngle + rangeEngageAngle) % 360)
+		if ((angle > startEngageAngle && angle < startEngageAngle + rangeEngageAngle)
+		    || (startEngageAngle + rangeEngageAngle > 360 && angle < (startEngageAngle + rangeEngageAngle) % 360))
 		{
 			if(shipController.addForceAtPosition(transform.rotation 
 			                                  * new Vector3(0, Config.ENGINE_POWER, 0),

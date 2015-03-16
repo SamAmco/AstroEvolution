@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class ShipController : MonoBehaviour 
 {
 	public int limbCount;
+	public bool initialized = false;
 	private double cumulativeDistanceFromTarget = 0;
 	public ShipChromosomeNode rootNode;
 	public GameObject currentTarget;
@@ -21,13 +22,14 @@ public class ShipController : MonoBehaviour
 	{
 		lastPos = transform.position;
 		orbs = new List<GameObject>(GameObject.FindGameObjectsWithTag("Orb"));
+		initialized = true;
 	}
 
 	void Update()
 	{
 		lifetime += Time.deltaTime;
 
-		if (isAtRest || (lastPos - transform.position).sqrMagnitude <= 0.1f)
+		if (isAtRest || (lastPos - transform.position).sqrMagnitude <= 0.01f)
 		{
 			stillnessValue += Config.STILLNESS_COST;
 			restFrames++;
@@ -42,13 +44,15 @@ public class ShipController : MonoBehaviour
 
 	void OnTriggerEnter(Collider other)
 	{
+		Debug.Log("Collided");
 		if (other.gameObject.tag == "Orb")
 		{
 			for (int i = 0; i < orbs.Count; ++i)
 			{
 				if (other.gameObject == orbs[i])
 				{
-					orbs.Remove(orbs[i]);
+					//orbs[i].SetActive(false);
+					orbs.RemoveAt(i);
 					currentTarget = null;
 					++orbsCollected;
 					break;
@@ -89,11 +93,15 @@ public class ShipController : MonoBehaviour
 
 	public Vector3 getForward()
 	{
+		/*Debug.DrawLine(transform.position,
+		               transform.position + (transform.rotation * new Vector3(0, 1f, 0)),
+		               Color.red);*/
 		return transform.rotation * new Vector3(0, 1f, 0);
 	}
+
 	public Vector3 getTarget()
 	{
-		if (currentTarget == null)
+		if (currentTarget == null || currentTarget.activeSelf == false)
 		{
 			if (!findNewTarget())
 				return Vector3.zero;
@@ -109,16 +117,21 @@ public class ShipController : MonoBehaviour
 		if (orbs.Count < 1)
 			return false;
 
+		bool found = false;
 		foreach (GameObject g in orbs)
 		{
+			if (g == null || g.activeSelf == false)
+				continue;
+
 			float dist = (g.transform.position - transform.position).sqrMagnitude;
 			if (dist < minDistance)
 			{
+				found = true;
 				currentTarget = g;
 				minDistance = dist;
 			}
 		}
-		return true;
+		return found;
 	}
 }
 
