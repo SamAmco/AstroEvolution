@@ -16,7 +16,7 @@ public class ShipController : MonoBehaviour
 	private double stillnessValue = 0;
 	private List<GameObject> orbs;
 	private bool isAtRest = false;
-	private int restFrames = 0;
+	private float restTime = 0;
 
 	void Start()
 	{
@@ -29,22 +29,21 @@ public class ShipController : MonoBehaviour
 	{
 		lifetime += Time.deltaTime;
 
-		if (isAtRest || (lastPos - transform.position).sqrMagnitude <= 0.01f)
+		if (isAtRest || (lastPos - transform.position).sqrMagnitude <= 0.08f)
 		{
 			stillnessValue += Config.STILLNESS_COST;
-			restFrames++;
-			if (restFrames > Config.FRAMES_TO_DEACTIVATION)
+			restTime += Time.deltaTime;
+			if (restTime > Config.TIME_TO_DEACTIVATION)
 				isAtRest = true;
 		}
 		else
-			restFrames = 0;
+			restTime = 0;
 
 		lastPos = transform.position;
 	}
 
 	void OnTriggerEnter(Collider other)
 	{
-		Debug.Log("Collided");
 		if (other.gameObject.tag == "Orb")
 		{
 			for (int i = 0; i < orbs.Count; ++i)
