@@ -3,16 +3,21 @@ using System.Collections;
 
 public class MovableCamera : MonoBehaviour 
 {
+	PlayerManager playerManager;
 
 	// Use this for initialization
-	void Start () {
-	
+	void Start () 
+	{
+		playerManager = GameObject.FindObjectOfType<PlayerManager>();
 	}
 	
 	// Update is called once per frame
 	void Update () 
 	{
-		if (Input.GetKeyDown(KeyCode.Escape))
+		Vector3 newPos = playerManager.getAveragePlayerPos();
+		transform.position = new Vector3(newPos.x, newPos.y, transform.position.z);
+
+		if (Input.GetButton("Cancel"))
 			Application.Quit();
 	}
 }

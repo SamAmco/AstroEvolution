@@ -16,13 +16,17 @@ public class ShipController : MonoBehaviour
 	private double fuelUsed = 0;
 	private Vector3 lastPos;
 	private double stillnessValue = 0;
+	private double angularVelValue = 0;
+	private double slownessValue = 0;
 	private bool isAtRest = false;
 	private float restTime = 0;
+	private PlayerManager playerManager;
+	private bool targetingPlayer = false;
 
 	void Start()
 	{
 		lastPos = transform.position;
-		orbs = new List<GameObject>(GameObject.FindGameObjectsWithTag("Orb"));
+		playerManager = FindObjectOfType<PlayerManager>();
 		initialized = true;
 	}
 
@@ -33,11 +37,15 @@ public class ShipController : MonoBehaviour
 			orbs.Add(t.gameObject);
 	}
 
-	void Update()
+	void FixedUpdate()
 	{
 		lifetime += Time.deltaTime;
+		angularVelValue += (Config.ANGULAR_VELOCITY_COST_MULTIPLIER * rigidbody.angularVelocity).z;
 
-		if (isAtRest || (lastPos - transform.position).sqrMagnitude <= 0.08f)
+		if (!targetingPlayer)
+			slownessValue += Config.SLOW_COST;
+
+		if (!targetingPlayer && (isAtRest || (lastPos - transform.position).sqrMagnitude <= 0.08f))
 		{
 			stillnessValue += Config.STILLNESS_COST;
 			restTime += Time.deltaTime;
@@ -82,20 +90,23 @@ public class ShipController : MonoBehaviour
 
 	public void addToCumulativeDistance(double d)
 	{
-		cumulativeDistanceFromTarget += d;
+		if (!targetingPlayer)
+			cumulativeDistanceFromTarget += d;
 	}
 
 	public void fuelUnitUsed()
 	{
-		fuelUsed += Config.FUEL_COST;
+		if (!targetingPlayer)
+			fuelUsed += Config.FUEL_COST;
 	}
 
 	public double getFitness()
 	{
-		return (((cumulativeDistanceFromTarget / (double)limbCount) + fuelUsed + stillnessValue) 
+		return (((cumulativeDistanceFromTarget / (double)limbCount) 
+		         + fuelUsed + stillnessValue + slownessValue + angularVelValue) 
 		         / (double)lifetime) 
 			* (double)Mathf.Pow(Config.ORB_MULTIPLIER, (float)orbsCollected)
-			* (double)Mathf.Pow(Config.BLOAT_MULTIPLIER, (float)limbCount);
+			* (double)Mathf.Pow(Config.BLOAT_MULTIPLIER, rootNode.engineCount());
 	}
 
 	public Vector3 getForward()
@@ -121,9 +132,6 @@ public class ShipController : MonoBehaviour
 	{
 		float minDistance = float.MaxValue;
 
-		if (orbs.Count < 1)
-			return false;
-
 		bool found = false;
 		foreach (GameObject g in orbs)
 		{
@@ -137,6 +145,13 @@ public class ShipController : MonoBehaviour
 				currentTarget = g;
 				minDistance = dist;
 			}
+		}
+		if (!found)
+		{
+			targetingPlayer = true;
+			currentTarget = playerManager.nearestPlayerTo(transform.position);
+			if (currentTarget != null)
+				found = true;
 		}
 		return found;
 	}

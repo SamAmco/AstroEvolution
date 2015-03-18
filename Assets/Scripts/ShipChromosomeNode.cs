@@ -54,6 +54,22 @@ public class ShipChromosomeNode
 		return s;
 	}
 
+	public int engineCount()
+	{
+		int engines = isEngine ? 1 : 0;
+		
+		if (top != null && parentPos != ChildNode.TOP)
+			engines += top.engineCount();
+		if (bottom != null && parentPos != ChildNode.BOTTOM)
+			engines += bottom.engineCount();
+		if (left != null && parentPos != ChildNode.LEFT)
+			engines += left.engineCount();
+		if (right != null && parentPos != ChildNode.RIGHT)
+			engines += right.engineCount();
+		
+		return engines;
+	}
+
 	private ShipChromosomeNode copyTree(ShipChromosomeNode parent)
 	{
 		ShipChromosomeNode s = copyNode();

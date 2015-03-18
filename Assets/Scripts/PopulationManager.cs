@@ -87,7 +87,7 @@ public class PopulationManager : MonoBehaviour
 					CrossoverAndMutationManager.TreeCrossover(selectionList);
 				
 				//PERFORM MUTATION
-				CrossoverAndMutationManager.NodeMutate(nextGeneration);
+				CrossoverAndMutationManager.TreeMutate(nextGeneration);//NodeMutate(nextGeneration);
 				
 				//RESET THE CURRENT GENERATION AND STORE THE OLD ONE
 				generations.Add(currentGeneration);
