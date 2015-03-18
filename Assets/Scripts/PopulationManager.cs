@@ -7,26 +7,26 @@ public class PopulationManager : MonoBehaviour
 	private List<Generation> generations;
 	private List<RandomShipCreator> shipCreators;
 	private Generation currentGeneration;
-	private OrbGeneratorScript orbGenerator;
+	public GameObject orbs;
 	private ShipArchive bestOfAllTime;
 
 	float generationTimeCounter;
 	bool evaluationFramePassed = false;
-	string lastFitnessesOutput = "";
+	//string lastFitnessesOutput = "";
 
 	void Start()
 	{
 		Time.timeScale = Config.SIMULATION_TIME_SCALE;
 
 		generations = new List<Generation>();
-		shipCreators = new List<RandomShipCreator>(GameObject.FindObjectsOfType<RandomShipCreator>());
+		shipCreators = new List<RandomShipCreator>(GetComponentsInChildren<RandomShipCreator>());
 		generationTimeCounter = 0;
-		orbGenerator = GameObject.FindObjectOfType<OrbGeneratorScript>();
 		currentGeneration = new Generation();
 		bestOfAllTime = new ShipArchive(null, double.MaxValue);
 
 		foreach (RandomShipCreator r in shipCreators)
 		{
+			r.setOrbsRoot(orbs);
 			r.generateRandomShip();
 		}
 		activateGeneration();
@@ -63,8 +63,6 @@ public class PopulationManager : MonoBehaviour
 		{
 			if (!evaluationFramePassed)
 			{
-				orbGenerator.resetOrbs();
-				
 				//EVALUATE SHIPS
 				foreach (RandomShipCreator r in shipCreators)
 				{
@@ -74,13 +72,13 @@ public class PopulationManager : MonoBehaviour
 			}
 			else
 			{
-				lastFitnessesOutput = "";
+				//ALWAYS KEEP THE BEST OF ALL TIME
 				foreach (ShipArchive s in currentGeneration.getShipArchives())
 				{
-					lastFitnessesOutput += s.fitness.ToString("F2") + "\n";
 					if (s.fitness < bestOfAllTime.fitness)
 						bestOfAllTime = new ShipArchive(s.root.copyTree(), s.fitness);
 				}
+
 				//PERFORM SELECTION
 				List<ShipChromosomeNode> selectionList = currentGeneration.SUS((uint)shipCreators.Count);
 				
@@ -119,6 +117,6 @@ public class PopulationManager : MonoBehaviour
 	void OnGUI()
 	{
 		GUI.Label(new Rect(10, 10, 100, 20), generationTimeCounter + "/" + Config.STANDARD_GENERATION_TIME);
-		GUI.Label(new Rect(10, 25, 200, 500), lastFitnessesOutput);
+		//GUI.Label(new Rect(10, 25, 200, 500), lastFitnessesOutput);
 	}
 }

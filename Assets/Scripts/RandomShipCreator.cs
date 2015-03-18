@@ -4,9 +4,13 @@ using System.Collections.Generic;
 
 public class RandomShipCreator : MonoBehaviour 
 { 
-	public OrbGeneratorScript orbGenerator;
 	private ShipController lastShip;
-	
+	private GameObject orbsRoot;
+
+	public void setOrbsRoot(GameObject orbsRoot)
+	{
+		this.orbsRoot = orbsRoot;
+	}
 
 	public void generateRandomShip()
 	{
@@ -41,6 +45,7 @@ public class RandomShipCreator : MonoBehaviour
 		BlockScript b = g.GetComponent<BlockScript>();
 		ShipController s = g.AddComponent<ShipController>();
 		s.rootNode = root;
+		s.setOrbs(orbsRoot);
 
 		lastShip = s;
 

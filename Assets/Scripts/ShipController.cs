@@ -6,15 +6,16 @@ public class ShipController : MonoBehaviour
 {
 	public int limbCount;
 	public bool initialized = false;
-	private double cumulativeDistanceFromTarget = 0;
 	public ShipChromosomeNode rootNode;
 	public GameObject currentTarget;
+
+	private List<GameObject> orbs;
+	private double cumulativeDistanceFromTarget = 0;
 	private double lifetime;
 	private int orbsCollected = 0;
 	private double fuelUsed = 0;
 	private Vector3 lastPos;
 	private double stillnessValue = 0;
-	private List<GameObject> orbs;
 	private bool isAtRest = false;
 	private float restTime = 0;
 
@@ -23,6 +24,13 @@ public class ShipController : MonoBehaviour
 		lastPos = transform.position;
 		orbs = new List<GameObject>(GameObject.FindGameObjectsWithTag("Orb"));
 		initialized = true;
+	}
+
+	public void setOrbs(GameObject root)
+	{
+		orbs = new List<GameObject>();
+		foreach (Transform t in root.transform)
+			orbs.Add(t.gameObject);
 	}
 
 	void Update()
