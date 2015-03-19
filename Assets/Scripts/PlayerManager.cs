@@ -5,11 +5,32 @@ using System.Collections.Generic;
 public class PlayerManager : MonoBehaviour 
 {
 	List<PlayerScript> players;
+	List<PopulationManager> populationManagers;
+	int numOfCollectables;
 
 	// Use this for initialization
 	void Start () 
 	{
+		populationManagers = new List<PopulationManager>(FindObjectsOfType<PopulationManager>());
 		players = new List<PlayerScript>(GetComponentsInChildren<PlayerScript>());
+		numOfCollectables = GameObject.FindGameObjectsWithTag("Collectable").Length;
+	}
+
+	public void collectedCollectable()
+	{
+		--numOfCollectables;
+		if (numOfCollectables == 0)
+		{
+			foreach(PopulationManager p in populationManagers)
+			{
+				p.initializeNextGeneration();
+			}
+			foreach(PlayerScript p in players)
+			{
+				p.nextGeneration();
+			}
+			numOfCollectables = GameObject.FindGameObjectsWithTag("Collectable").Length;
+		}
 	}
 
 	public Vector3 getAveragePlayerPos()

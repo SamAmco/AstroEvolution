@@ -40,7 +40,8 @@ public class RandomShipCreator : MonoBehaviour
 		r.drag = Config.BLOCK_DRAG;
 		r.angularDrag = Config.BLOCK_ANGULAR_DRAG;
 		//r.constraints = RigidbodyConstraints.FreezeAll;
-		r.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY;
+		r.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY
+			| RigidbodyConstraints.FreezePositionZ;
 
 		BlockScript b = g.GetComponent<BlockScript>();
 		ShipController s = g.AddComponent<ShipController>();

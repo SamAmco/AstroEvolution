@@ -10,8 +10,9 @@ public class PopulationManager : MonoBehaviour
 	public GameObject orbs;
 	private ShipArchive bestOfAllTime;
 
-	float generationTimeCounter;
+	//float generationTimeCounter;
 	bool evaluationFramePassed = false;
+	bool startNextGeneration = false;
 	//string lastFitnessesOutput = "";
 
 	void Start()
@@ -20,7 +21,7 @@ public class PopulationManager : MonoBehaviour
 
 		generations = new List<Generation>();
 		shipCreators = new List<RandomShipCreator>(GetComponentsInChildren<RandomShipCreator>());
-		generationTimeCounter = 0;
+		//generationTimeCounter = 0;
 		currentGeneration = new Generation();
 		bestOfAllTime = new ShipArchive(null, double.MaxValue);
 
@@ -31,24 +32,6 @@ public class PopulationManager : MonoBehaviour
 		}
 		activateGeneration();
 		
-		/*ShipChromosomeNode s1 = ShipChromosomeNode.generateRandomShip();
-		ShipChromosomeNode s2 = ShipChromosomeNode.generateRandomShip();
-		Debug.Log(s1.getString());
-		Debug.Log(s2.getString());
-
-		List<ShipArchive> tempArchives = new List<ShipArchive>();
-		tempArchives.Add(new ShipArchive(s1, 0));
-		tempArchives.Add(new ShipArchive(s2, 0));
-
-		List<ShipChromosomeNode> scnList = CrossoverAndMutationManager.TreeCrossover(tempArchives);
-		Debug.Log(scnList[0].getString());
-		Debug.Log(scnList[1].getString());
-
-		shipCreators[0].generatePhysicalShip(s1);
-		shipCreators[1].generatePhysicalShip(s2);
-		shipCreators[2].generatePhysicalShip(scnList[0]);
-		shipCreators[3].generatePhysicalShip(scnList[1]);*/
-		
 	}
 
 	public void shipEvaluated(ShipArchive shipArchive)
@@ -58,8 +41,8 @@ public class PopulationManager : MonoBehaviour
 
 	void Update()
 	{
-		generationTimeCounter += Time.deltaTime;
-		if (generationTimeCounter >= Config.STANDARD_GENERATION_TIME)
+		//generationTimeCounter += Time.deltaTime;
+		if (startNextGeneration)//generationTimeCounter >= Config.STANDARD_GENERATION_TIME)
 		{
 			if (!evaluationFramePassed)
 			{
@@ -100,10 +83,16 @@ public class PopulationManager : MonoBehaviour
 					shipCreators[i].generatePhysicalShip(nextGeneration[i]);
 				}
 				activateGeneration();
-				generationTimeCounter = 0;
+				//generationTimeCounter = 0;
 				evaluationFramePassed = false;
+				startNextGeneration = false;
 			}
 		}
+	}
+
+	public void initializeNextGeneration()
+	{
+		startNextGeneration = true;
 	}
 
 	private void activateGeneration()
@@ -116,7 +105,7 @@ public class PopulationManager : MonoBehaviour
 
 	void OnGUI()
 	{
-		GUI.Label(new Rect(10, 10, 100, 20), generationTimeCounter + "/" + Config.STANDARD_GENERATION_TIME);
+		//GUI.Label(new Rect(10, 10, 100, 20), generationTimeCounter + "/" + Config.STANDARD_GENERATION_TIME);
 		//GUI.Label(new Rect(10, 25, 200, 500), lastFitnessesOutput);
 	}
 }
