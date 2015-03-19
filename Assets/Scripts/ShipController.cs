@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 public class ShipController : MonoBehaviour 
 {
@@ -40,20 +41,22 @@ public class ShipController : MonoBehaviour
 	void FixedUpdate()
 	{
 		lifetime += Time.deltaTime;
-		angularVelValue += (Config.ANGULAR_VELOCITY_COST_MULTIPLIER * rigidbody.angularVelocity).z;
 
 		if (!targetingPlayer)
-			slownessValue += Config.SLOW_COST;
-
-		if (!targetingPlayer && (isAtRest || (lastPos - transform.position).sqrMagnitude <= 0.08f))
 		{
-			stillnessValue += Config.STILLNESS_COST;
-			restTime += Time.deltaTime;
-			if (restTime > Config.TIME_TO_DEACTIVATION)
-				isAtRest = true;
+			slownessValue += Config.SLOW_COST;
+			angularVelValue += Math.Abs((Config.ANGULAR_VELOCITY_COST_MULTIPLIER * rigidbody.angularVelocity).z);
+
+			if ((isAtRest || (lastPos - transform.position).sqrMagnitude <= 0.08f))
+			{
+				stillnessValue += Config.STILLNESS_COST;
+				restTime += Time.deltaTime;
+				if (restTime > Config.TIME_TO_DEACTIVATION)
+					isAtRest = true;
+			}
+			else
+				restTime = 0;
 		}
-		else
-			restTime = 0;
 
 		lastPos = transform.position;
 	}
@@ -102,11 +105,21 @@ public class ShipController : MonoBehaviour
 
 	public double getFitness()
 	{
-		return (((cumulativeDistanceFromTarget / (double)limbCount) 
-		         + fuelUsed + stillnessValue + slownessValue + angularVelValue) 
-		         / (double)lifetime) 
+		double d = (((cumulativeDistanceFromTarget / (double)limbCount) 
+		             + fuelUsed + stillnessValue + slownessValue + angularVelValue) 
+		            / (double)lifetime) 
 			* (double)Mathf.Pow(Config.ORB_MULTIPLIER, (float)orbsCollected)
-			* (double)Mathf.Pow(Config.BLOAT_MULTIPLIER, rootNode.engineCount());
+				* (double)Mathf.Pow(Config.BLOAT_MULTIPLIER, rootNode.engineCount());
+
+		if (d < 0)
+		{
+			Debug.Log((cumulativeDistanceFromTarget / (double)limbCount));
+			Debug.Log(fuelUsed);
+			Debug.Log(stillnessValue);
+			Debug.Log(slownessValue);
+			Debug.Log(angularVelValue);
+		}
+		return d;
 	}
 
 	public Vector3 getForward()
