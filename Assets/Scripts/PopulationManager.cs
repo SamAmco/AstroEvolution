@@ -90,6 +90,14 @@ public class PopulationManager : MonoBehaviour
 		}
 	}
 
+	public ShipChromosomeNode getBestOfAllTime()
+	{
+		if (bestOfAllTime.root == null)
+			return null;
+
+		return bestOfAllTime.root;
+	}
+
 	public void initializeNextGeneration()
 	{
 		startNextGeneration = true;

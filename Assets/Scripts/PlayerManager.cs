@@ -6,14 +6,25 @@ public class PlayerManager : MonoBehaviour
 {
 	List<PlayerScript> players;
 	List<PopulationManager> populationManagers;
+	List<GameSpawnPoint> gameSpawnPoints;
 	int numOfCollectables;
 
 	// Use this for initialization
 	void Start () 
 	{
+		gameSpawnPoints = new List<GameSpawnPoint>(FindObjectsOfType<GameSpawnPoint>());
 		populationManagers = new List<PopulationManager>(FindObjectsOfType<PopulationManager>());
 		players = new List<PlayerScript>(GetComponentsInChildren<PlayerScript>());
 		numOfCollectables = GameObject.FindGameObjectsWithTag("Collectable").Length;
+		triggerSpawnPoints();
+	}
+
+	private void triggerSpawnPoints()
+	{
+		foreach (GameSpawnPoint g in gameSpawnPoints)
+		{
+			g.nextGeneration();
+		}
 	}
 
 	public void collectedCollectable()
@@ -29,6 +40,7 @@ public class PlayerManager : MonoBehaviour
 			{
 				p.nextGeneration();
 			}
+			triggerSpawnPoints();
 			numOfCollectables = GameObject.FindGameObjectsWithTag("Collectable").Length;
 		}
 	}

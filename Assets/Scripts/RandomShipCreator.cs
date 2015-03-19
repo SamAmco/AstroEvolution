@@ -4,8 +4,8 @@ using System.Collections.Generic;
 
 public class RandomShipCreator : MonoBehaviour 
 { 
-	private ShipController lastShip;
-	private GameObject orbsRoot;
+	protected ShipController lastShip;
+	protected GameObject orbsRoot;
 
 	public void setOrbsRoot(GameObject orbsRoot)
 	{
@@ -30,7 +30,6 @@ public class RandomShipCreator : MonoBehaviour
 
 	public void generatePhysicalShip(ShipChromosomeNode root)
 	{
-		//Debug.Log(root.getString());
 		GameObject g = (GameObject)GameObject.Instantiate(Resources.Load(Config.HEAVY_BLOCK_PREFAB_LOCATION),
 		                       Vector3.zero,
 		                       Quaternion.identity);
