@@ -2,8 +2,18 @@
 using System.Collections;
 using System.Collections.Generic;
 
+public enum PlayerNum
+{
+	PLAYER1,
+	PLAYER2,
+	PLAYER3,
+	PLAYER4
+}
+
 public class PlayerScript : MonoBehaviour 
 {
+	public PlayerNum playerNum;
+
 	PlayerManager playerManager;
 	List<GameObject> disabledCollectables;
 	float immuneTime = 0;
@@ -58,7 +68,8 @@ public class PlayerScript : MonoBehaviour
 				renderer.material.color = Color.white;
 			}
 		}
-		Vector3 normIn = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0).normalized;
+		Vector3 normIn = new Vector3(Input.GetAxis("Horizontal" + ((int)playerNum + 1)),
+		                             Input.GetAxis("Vertical" + ((int)playerNum + 1)), 0).normalized;
 		rigidbody.velocity = normIn * Config.PLAYER_SPEED;
 	}
 }
