@@ -110,10 +110,4 @@ public class PopulationManager : MonoBehaviour
 			r.activate();
 		}
 	}
-
-	void OnGUI()
-	{
-		//GUI.Label(new Rect(10, 10, 100, 20), generationTimeCounter + "/" + Config.STANDARD_GENERATION_TIME);
-		//GUI.Label(new Rect(10, 25, 200, 500), lastFitnessesOutput);
-	}
 }

@@ -9,6 +9,7 @@ public class PlayerManager : MonoBehaviour
 	List<GameSpawnPoint> gameSpawnPoints;
 	int numOfCollectables;
 	int lives;
+	int score;
 
 	// Use this for initialization
 	void Start () 
@@ -24,6 +25,14 @@ public class PlayerManager : MonoBehaviour
 	public void playerHit()
 	{
 		lives--;
+		if (lives < 0)
+		{
+			GameObject g = new GameObject();
+			GameOverInfo info = g.AddComponent<GameOverInfo>();
+			info.numPlayers = 1;
+			info.score = score;
+			Application.LoadLevel("GameOverScene");
+		}
 	}
 
 	private void triggerSpawnPoints()
@@ -37,6 +46,7 @@ public class PlayerManager : MonoBehaviour
 	public void collectedCollectable()
 	{
 		--numOfCollectables;
+		++score;
 		if (numOfCollectables == 0)
 		{
 			foreach(PopulationManager p in populationManagers)
@@ -83,6 +93,7 @@ public class PlayerManager : MonoBehaviour
 	void OnGUI()
 	{
 		GUI.Label(new Rect(10, 10, 100, 20), "Lives: " + lives);
+		GUI.Label(new Rect(10, 25, 100, 20), "Score: " + score);
 	}
 }
 
