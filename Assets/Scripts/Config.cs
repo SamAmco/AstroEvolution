@@ -25,4 +25,6 @@ public class Config
 	public const string HEAVY_BLOCK_PREFAB_LOCATION = "Prefabs/HeavyBlock";
 
 	public const float PLAYER_SPEED = 125f;//250f;
+	public const int PLAYERS_START_LIVES = 3;
+	public const float PLAYER_HIT_IMMUNE_TIME = 3;
 }

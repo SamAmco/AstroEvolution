@@ -8,6 +8,7 @@ public class PlayerManager : MonoBehaviour
 	List<PopulationManager> populationManagers;
 	List<GameSpawnPoint> gameSpawnPoints;
 	int numOfCollectables;
+	int lives;
 
 	// Use this for initialization
 	void Start () 
@@ -16,7 +17,13 @@ public class PlayerManager : MonoBehaviour
 		populationManagers = new List<PopulationManager>(FindObjectsOfType<PopulationManager>());
 		players = new List<PlayerScript>(GetComponentsInChildren<PlayerScript>());
 		numOfCollectables = GameObject.FindGameObjectsWithTag("Collectable").Length;
+		lives = Config.PLAYERS_START_LIVES;
 		triggerSpawnPoints();
+	}
+
+	public void playerHit()
+	{
+		lives--;
 	}
 
 	private void triggerSpawnPoints()
@@ -71,6 +78,11 @@ public class PlayerManager : MonoBehaviour
 		}
 
 		return p;
+	}
+
+	void OnGUI()
+	{
+		GUI.Label(new Rect(10, 10, 100, 20), "Lives: " + lives);
 	}
 }
 

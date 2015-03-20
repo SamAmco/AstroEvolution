@@ -18,6 +18,7 @@ public class GameSpawnPoint : RandomShipCreator
 		if (lastShip != null)
 			GameObject.Destroy(lastShip.gameObject);
 
+		populationManager.GetComponents<Transform>();
 		ShipChromosomeNode bestOfAllTime = populationManager.getBestOfAllTime();
 
 		if (bestOfAllTime == null)
