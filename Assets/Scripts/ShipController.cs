@@ -23,6 +23,7 @@ public class ShipController : MonoBehaviour
 	private float restTime = 0;
 	private PlayerManager playerManager;
 	private bool targetingPlayer = false;
+	private float retargetTime = 0;
 
 	void Start()
 	{
@@ -41,6 +42,8 @@ public class ShipController : MonoBehaviour
 	void FixedUpdate()
 	{
 		lifetime += Time.deltaTime;
+		if (retargetTime > 0)
+			retargetTime -= Time.deltaTime;
 
 		if (!targetingPlayer)
 		{
@@ -132,8 +135,12 @@ public class ShipController : MonoBehaviour
 
 	public Vector3 getTarget()
 	{
-		if (currentTarget == null || currentTarget.activeSelf == false)
+		if (currentTarget == null || currentTarget.activeSelf == false 
+		    || (retargetTime <= 0 
+		    	&& (currentTarget.transform.position - transform.position).sqrMagnitude 
+		    		> Config.MAX_DISTANCE_TO_CHANGE_TARGET))
 		{
+			retargetTime = Config.MAX_RETARGET_INTERVAL;
 			if (!findNewTarget())
 				return Vector3.zero;
 		}

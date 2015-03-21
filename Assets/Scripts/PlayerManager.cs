@@ -17,6 +17,45 @@ public class PlayerManager : MonoBehaviour
 		gameSpawnPoints = new List<GameSpawnPoint>(FindObjectsOfType<GameSpawnPoint>());
 		populationManagers = new List<PopulationManager>(FindObjectsOfType<PopulationManager>());
 		players = new List<PlayerScript>(GetComponentsInChildren<PlayerScript>());
+
+		switch(Config.NUMBER_OF_PLAYERS)
+		{
+		case 1:
+			for(int i = players.Count - 1; i >= 0; i--)
+			{
+				if (players[i].playerNum != PlayerNum.PLAYER1)
+				{
+					players[i].playerOrbsRoot.gameObject.SetActive(false);
+					players[i].gameObject.SetActive(false);
+					players.RemoveAt(i);
+				}
+			}
+			break;
+		case 2:
+			for(int i = players.Count - 1; i >= 0; i--)
+			{
+				if (players[i].playerNum == PlayerNum.PLAYER3 
+				    || players[i].playerNum == PlayerNum.PLAYER4)
+				{
+					players[i].playerOrbsRoot.gameObject.SetActive(false);
+					players[i].gameObject.SetActive(false);
+					players.RemoveAt(i);
+				}
+			}
+			break;
+		case 3:
+			for(int i = players.Count - 1; i >= 0; i--)
+			{
+				if (players[i].playerNum == PlayerNum.PLAYER4)
+				{
+					players[i].playerOrbsRoot.gameObject.SetActive(false);
+					players[i].gameObject.SetActive(false);
+					players.RemoveAt(i);
+				}
+			}
+			break;
+		}
+
 		numOfCollectables = GameObject.FindGameObjectsWithTag("Collectable").Length;
 		lives = Config.PLAYERS_START_LIVES;
 		triggerSpawnPoints();
@@ -29,7 +68,7 @@ public class PlayerManager : MonoBehaviour
 		{
 			GameObject g = new GameObject();
 			GameOverInfo info = g.AddComponent<GameOverInfo>();
-			info.numPlayers = 1;
+			info.numPlayers = Config.NUMBER_OF_PLAYERS;
 			info.score = score;
 			Application.LoadLevel("GameOverScene");
 		}
@@ -67,7 +106,8 @@ public class PlayerManager : MonoBehaviour
 		Vector3 p = Vector3.zero;
 		foreach (PlayerScript pl in players)
 		{
-			p += pl.transform.position;
+			if (pl.gameObject.activeSelf)
+				p += pl.transform.position;
 		}
 		return p / (float)players.Count;
 	}

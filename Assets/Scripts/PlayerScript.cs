@@ -13,17 +13,28 @@ public enum PlayerNum
 public class PlayerScript : MonoBehaviour 
 {
 	public PlayerNum playerNum;
+	public Transform playerOrbsRoot;
 
-	PlayerManager playerManager;
-	List<GameObject> disabledCollectables;
-	float immuneTime = 0;
-	bool immune = false;
+	private PlayerManager playerManager;
+	private List<GameObject> collectables;
+	private float immuneTime = 0;
+	private bool immune = false;
+
+	private Color defaultColor;
+	private SpriteRenderer spriteRenderer;
 
 	// Use this for initialization
 	void Start () 
 	{
 		playerManager = GameObject.FindObjectOfType<PlayerManager>();
-		disabledCollectables = new List<GameObject>();
+		collectables = new List<GameObject>();
+		spriteRenderer = GetComponent<SpriteRenderer>();
+		defaultColor = spriteRenderer.color;
+		foreach (Transform t in playerOrbsRoot)
+		{
+			if (t.tag == "Collectable")
+				collectables.Add(t.gameObject);
+		}
 	}
 
 	void OnCollisionEnter(Collision collision)
@@ -33,15 +44,14 @@ public class PlayerScript : MonoBehaviour
 			playerManager.playerHit();
 			immuneTime = Config.PLAYER_HIT_IMMUNE_TIME;
 			immune = true;
-			renderer.material.color = Color.blue;
+			spriteRenderer.color = Color.blue;
 		}
 	}
 
 	void OnTriggerEnter(Collider other)
 	{
-		if (other.gameObject.tag == "Collectable")
+		if (other.gameObject.tag == "Collectable" && other.transform.parent == playerOrbsRoot)
 		{
-			disabledCollectables.Add(other.gameObject);
 			other.gameObject.SetActive(false);
 			playerManager.collectedCollectable();
 		}
@@ -49,11 +59,10 @@ public class PlayerScript : MonoBehaviour
 
 	public void nextGeneration()
 	{
-		foreach(GameObject g in disabledCollectables)
+		foreach(GameObject g in collectables)
 		{
 			g.SetActive(true);
 		}
-		disabledCollectables.Clear();
 	}
 
 	// Update is called once per frame
@@ -65,11 +74,18 @@ public class PlayerScript : MonoBehaviour
 			if (immuneTime < 0)
 			{
 				immune = false;
-				renderer.material.color = Color.white;
+				spriteRenderer.color = defaultColor;
 			}
 		}
 		Vector3 normIn = new Vector3(Input.GetAxis("Horizontal" + ((int)playerNum + 1)),
-		                             Input.GetAxis("Vertical" + ((int)playerNum + 1)), 0).normalized;
+		                             Input.GetAxis("Vertical" + ((int)playerNum + 1)), 0);
+
+		if (playerNum == PlayerNum.PLAYER1 && normIn.sqrMagnitude < 0.1f)
+		{
+			normIn = new Vector3(Input.GetAxis("HorizontalKeys"),
+			                     Input.GetAxis("VerticalKeys"), 0);
+		}
+		normIn.Normalize();
 		rigidbody.velocity = normIn * Config.PLAYER_SPEED;
 	}
 }
