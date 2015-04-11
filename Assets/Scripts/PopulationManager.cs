@@ -8,9 +8,10 @@ public class PopulationManager : MonoBehaviour
 	private List<RandomShipCreator> shipCreators;
 	private Generation currentGeneration;
 	public GameObject orbs;
+	public bool useTimer = false;
 	private ShipArchive bestOfAllTime;
 
-	//float generationTimeCounter;
+	float generationTimeCounter;
 	bool evaluationFramePassed = false;
 	bool startNextGeneration = false;
 	//string lastFitnessesOutput = "";
@@ -21,7 +22,7 @@ public class PopulationManager : MonoBehaviour
 
 		generations = new List<Generation>();
 		shipCreators = new List<RandomShipCreator>(GetComponentsInChildren<RandomShipCreator>());
-		//generationTimeCounter = 0;
+		generationTimeCounter = 0;
 		currentGeneration = new Generation();
 		bestOfAllTime = new ShipArchive(null, double.MaxValue);
 
@@ -41,8 +42,17 @@ public class PopulationManager : MonoBehaviour
 
 	void Update()
 	{
-		//generationTimeCounter += Time.deltaTime;
-		if (startNextGeneration)//generationTimeCounter >= Config.STANDARD_GENERATION_TIME)
+		if (useTimer)
+		{
+			generationTimeCounter += Time.deltaTime;
+			if (generationTimeCounter >= Config.STANDARD_GENERATION_TIME)
+			{
+				generationTimeCounter = 0;
+				startNextGeneration = true;
+			}
+		}
+
+		if (startNextGeneration)
 		{
 			if (!evaluationFramePassed)
 			{

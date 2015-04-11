@@ -10,7 +10,7 @@ public class Config
 	public const float CHANCE_OF_CHILD_NODE = 0.3f;
 	public const int MAX_SHIP_DEPTH = 5;
 	public const float MAX_CHILD_ROTATION = 5f;
-	public const int STANDARD_GENERATION_TIME = 120;
+	public const int STANDARD_GENERATION_TIME = 20;//120;
 	public const float SIMULATION_TIME_SCALE = 1.0f;
 	public const float FUEL_COST = 0f;
 	public const float MUTATION_PROBABILITY = 0.15f;

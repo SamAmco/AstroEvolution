@@ -166,7 +166,7 @@ public class ShipController : MonoBehaviour
 				minDistance = dist;
 			}
 		}
-		if (!found)
+		if (!found && playerManager != null)
 		{
 			targetingPlayer = true;
 			currentTarget = playerManager.nearestPlayerTo(transform.position);
